@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="api-response-json" format="json">
+      <types:shape format="weave" example="examples/api-response.json"><![CDATA[%dw 2.0
+
+type api_response_json = Array<{|  originLocation: {| locationCode: String |},   destinationLocation: {| locationCode: String |}|}> {"example": "[{\\\"originLocation\\\":{\\\"locationCode\\\":\\\"BEN-SG\\\"},\\\"destinationLocation\\\":{\\\"locationCode\\\":\\\"KLG-MY\\\"}},{\\\"originLocation\\\":{\\\"locationCode\\\":\\\"BNE-AU\\\"},\\\"destinationLocation\\\":{\\\"locationCode\\\":\\\"BKK-TH\\\"}}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="booking-svc-resp-xml" format="xml">
+      <types:example format="xml" element="ROUTELIST" location="examples/booking-response.xml"/>
+    </types:type>
+    <types:type name="booking-resp-out-string" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#43b56f98-f26a-4e97-be24-ad9e59183189">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:variables>
+          <types:variable name="routeList" type="booking-resp-out-string"/>
+        </types:variables>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#6f4d80b3-30a2-4f14-bb21-304ede9d435b">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="booking-svc-resp-xml"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="api-response-json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

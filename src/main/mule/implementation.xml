@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	
+	<os:object-store name="WebService_Response_ObjectStore" doc:name="Object store" doc:id="64bcbdad-b969-412c-b8ad-adb6b039c587" persistent="false" entryTtl="1" entryTtlUnit="DAYS" expirationIntervalUnit="DAYS" />
 	<flow name="routesFlow" doc:id="96438057-7902-46bf-a59d-f30e4013805b" >
-		<ee:transform doc:name="Build WS Request" doc:id="7a884b92-a604-41a5-aa7d-d2f635a8635b" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<set-variable value="#[attributes.uriParams.transportType]" doc:name="Set transportType" doc:id="bde69278-f4c0-4430-8d6d-a2da023e13e7" variableName="transportType"/>
+		<os:retrieve doc:name="Retrieve" doc:id="a3b63cb6-07ab-472f-9419-711c8bce9c89" key="#[attributes.uriParams.transportType]" objectStore="WebService_Response_ObjectStore">
+			<os:default-value ><![CDATA[false]]></os:default-value>
+		</os:retrieve>
+		<choice doc:name="Choice" doc:id="3430428e-eec1-44b3-ac2f-cd3cbd4ba4d0" >
+			<when expression='#[payload == "false"]'>
+				<ee:transform doc:name="Build WS Request" doc:id="7a884b92-a604-41a5-aa7d-d2f635a8635b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/xml
 ns book http://www.example.org/Bookings/
 ---
@@ -19,16 +28,47 @@ ns book http://www.example.org/Bookings/
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<wsc:consume doc:name="Consume" doc:id="b0c9e24c-69fd-40ca-a803-1e59a7a5e4c6" config-ref="transNationalBookingServiceWsConsumer" operation="getRoutes"/>
-		<set-variable value="#[payload.body]" doc:name="Set Variable" doc:id="84687100-e830-49cf-80b9-b231f7f6b66a" variableName="routeList"/>
-		<ee:transform doc:name="Build Final Response" doc:id="43b56f98-f26a-4e97-be24-ad9e59183189" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
+				<wsc:consume doc:name="Consume" doc:id="b0c9e24c-69fd-40ca-a803-1e59a7a5e4c6" config-ref="transNationalBookingServiceWsConsumer" operation="getRoutes" />
+				<ee:transform doc:name="Extract Route List" doc:id="43b56f98-f26a-4e97-be24-ad9e59183189">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.example.org/Bookings/
+var xmlContent = (read(payload.body.ns0#getRoutesResponse.out, "application/xml"))
 ---
-payload]]></ee:set-payload>
+xmlContent]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="routeList"><![CDATA[%dw 2.0
+output application/java
+ns ns0 http://www.example.org/Bookings/
+---
+payload.body.ns0#getRoutesResponse.out]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+				<ee:transform doc:name="Build Final Response" doc:id="6f4d80b3-30a2-4f14-bb21-304ede9d435b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.example.org/Bookings/
+---
+payload.ROUTELIST.*ROUTEINFO map ( rOUTEINFO , indexOfROUTEINFO ) -> {
+	originLocation: {
+		locationCode: rOUTEINFO.ORIGIN default ""
+	},
+	destinationLocation: {
+		locationCode: rOUTEINFO.DESTINATION default ""
+	}
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+				<os:store doc:name="Store" doc:id="282c4def-e562-445a-9315-53942905801c" key="#[vars.transportType]" objectStore="WebService_Response_ObjectStore"/>
+				<logger level="INFO" doc:name="Logger" doc:id="aaa5200b-29dd-4fa9-9224-db59bb7144bf" message='#["Data cached for transportType: " ++ vars.transportType]'/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="58efb441-cca2-4e40-a5cd-82627c1d4cac" message='#["Returning cached data exists for transportType: " ++ vars.transportType]'/>
+			</otherwise>
+		</choice>
 	</flow>
 	<flow name="schedulesFlow" doc:id="5b1685bc-395b-4d42-9cc2-8081a2d5a1e2" >
 		<set-variable value="501" doc:name="Set Variable" doc:id="98564d94-b83b-44b7-97c8-a8eb4cf2b988" variableName="httpStatus"/>
