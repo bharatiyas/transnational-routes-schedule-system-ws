@@ -1,0 +1,10 @@
+http:
+  port: "8081"
+  
+transnational:
+  routes:
+    location: ""
+    service: "Bookings"
+    port: "BookingsSOAP"
+    address: "http://localhost:8088/mockBookingsSOAP"
+    

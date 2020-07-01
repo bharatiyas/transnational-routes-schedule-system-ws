@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="routesFlow" doc:id="96438057-7902-46bf-a59d-f30e4013805b" >
+		<ee:transform doc:name="Build WS Request" doc:id="7a884b92-a604-41a5-aa7d-d2f635a8635b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns book http://www.example.org/Bookings/
+---
+{
+	book#getRoutes: {
+		in: "123"
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="Consume" doc:id="b0c9e24c-69fd-40ca-a803-1e59a7a5e4c6" config-ref="transNationalBookingServiceWsConsumer" operation="getRoutes"/>
+		<set-variable value="#[payload.body]" doc:name="Set Variable" doc:id="84687100-e830-49cf-80b9-b231f7f6b66a" variableName="routeList"/>
+		<ee:transform doc:name="Build Final Response" doc:id="43b56f98-f26a-4e97-be24-ad9e59183189" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="schedulesFlow" doc:id="5b1685bc-395b-4d42-9cc2-8081a2d5a1e2" >
+		<set-variable value="501" doc:name="Set Variable" doc:id="98564d94-b83b-44b7-97c8-a8eb4cf2b988" variableName="httpStatus"/>
+	</flow>
+</mule>

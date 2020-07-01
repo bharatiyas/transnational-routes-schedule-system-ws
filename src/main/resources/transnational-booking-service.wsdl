@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/Bookings/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Bookings" targetNamespace="http://www.example.org/Bookings/">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.example.org/Bookings/">
+			<xsd:element name="getRoutes">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="in" type="xsd:string"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getRoutesResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="out" type="xsd:string"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="getRoutesRequest">
+		<wsdl:part element="tns:getRoutes" name="routeRequest"/>
+	</wsdl:message>
+	<wsdl:message name="getRoutesResponse">
+		<wsdl:part element="tns:getRoutesResponse" name="routeResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="Bookings">
+		<wsdl:operation name="getRoutes">
+			<wsdl:input message="tns:getRoutesRequest"/>
+			<wsdl:output message="tns:getRoutesResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="BookingsSOAP" type="tns:Bookings">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="getRoutes">
+			<soap:operation soapAction="http://www.example.org/Bookings/getRoutes"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="Bookings">
+		<wsdl:port binding="tns:BookingsSOAP" name="BookingsSOAP">
+			<soap:address location="http://locahost:9090/transnational"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
