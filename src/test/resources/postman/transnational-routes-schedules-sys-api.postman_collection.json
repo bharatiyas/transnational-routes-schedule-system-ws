@@ -1,0 +1,54 @@
+{
+	"info": {
+		"_postman_id": "cc928f88-2ec9-42ef-ad9c-a127d6338c13",
+		"name": "transnational-routes-schedules-sys-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Transnational-Routes-Schedules-Sys-API-Routes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{transnational-rt-sch-sys-api-host}}:{{transnational-rt-sch-sys-api-port}}/api/transportType/transportCompany/routes",
+					"protocol": "http",
+					"host": [
+						"{{transnational-rt-sch-sys-api-host}}"
+					],
+					"port": "{{transnational-rt-sch-sys-api-port}}",
+					"path": [
+						"api",
+						"transportType",
+						"transportCompany",
+						"routes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transnational-Routes-Schedules-Sys-API-Schedules",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{transnational-rt-sch-sys-api-host}}:{{transnational-rt-sch-sys-api-port}}/api/transportType/transportCompany/schedules",
+					"protocol": "http",
+					"host": [
+						"{{transnational-rt-sch-sys-api-host}}"
+					],
+					"port": "{{transnational-rt-sch-sys-api-port}}",
+					"path": [
+						"api",
+						"transportType",
+						"transportCompany",
+						"schedules"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
