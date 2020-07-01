@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="12b9b712-8c69-4eba-9b40-9844d2229d03" activeEnvironment="Default" name="transnational-booking-service" resourceRoot="" soapui-version="5.3.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="3d0ad6c4-866a-4344-8e61-1ec9610b2090" wsaVersion="NONE" name="BookingsSOAP" type="wsdl" bindingName="{http://www.example.org/Bookings/}BookingsSOAP" soapVersion="1_1" anonymous="optional" definition="file:/C:/Users/sanja/Desktop/Transnational/transnational-booking-service.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:\C:\Users\sanja\Desktop\Transnational\transnational-booking-service.wsdl"><con:part><con:url>file:\C:\Users\sanja\Desktop\Transnational\transnational-booking-service.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="Bookings" targetNamespace="http://www.example.org/Bookings/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/Bookings/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.example.org/Bookings/">
+      <xsd:element name="getRoutes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="in" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getRoutesResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="out" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getRoutesRequest">
+    <wsdl:part element="tns:getRoutes" name="routeRequest"/>
+  </wsdl:message>
+  <wsdl:message name="getRoutesResponse">
+    <wsdl:part element="tns:getRoutesResponse" name="routeResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="Bookings">
+    <wsdl:operation name="getRoutes">
+      <wsdl:input message="tns:getRoutesRequest"/>
+      <wsdl:output message="tns:getRoutesResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BookingsSOAP" type="tns:Bookings">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getRoutes">
+      <soap:operation soapAction="http://www.example.org/Bookings/getRoutes"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Bookings">
+    <wsdl:port binding="tns:BookingsSOAP" name="BookingsSOAP">
+      <soap:address location="http://locahost:9090/transnational"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://DESKTOP-2SQ264O:8088/mockBookingsSOAP</con:endpoint><con:endpoint>http://locahost:9090/transnational</con:endpoint></con:endpoints><con:operation id="897bdca8-8938-4f82-91d5-eedc9e0490e6" isOneWay="false" action="http://www.example.org/Bookings/getRoutes" name="getRoutes" bindingOperationName="getRoutes" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="1bdc3104-9d79-4df3-b7b6-e91976f1c084" name="RequestToMock"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8088/mockBookingsSOAP</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:book="http://www.example.org/Bookings/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <book:getRoutes>\r
+         <in>123</in>\r
+      </book:getRoutes>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.example.org/Bookings/getRoutes"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:mockService id="86475174-11d5-468b-9782-5a5a7b9c1f43" port="8088" path="/mockBookingsSOAP" host="DESKTOP-2SQ264O" name="BookingsSOAP-MockService"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.mock.WsdlMockService@require-soap-action">false</con:setting></con:settings><con:properties/><con:mockOperation name="getRoutes" id="a76ee588-1111-4431-a4a6-a61bf38f829c" interface="BookingsSOAP" operation="getRoutes"><con:settings/><con:defaultResponse>Response 1</con:defaultResponse><con:dispatchStyle>SEQUENCE</con:dispatchStyle><con:response name="Response 1" id="e3c3813b-714a-435d-bc51-b8c8a0a3c9cd" httpResponseStatus="200" encoding="UTF-8"><con:settings/><con:responseContent><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:book="http://www.example.org/Bookings/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <book:getRoutesResponse>
+         <out><![CDATA[<?xml version="1.0" encoding="utf-8"?> <ROUTELIST> <ROUTEINFO>
+<ORIGIN>MY-KUL</ORIGIN> <DESTINATION>SG-BEU</DESTINATION> </ROUTEINFO> </ROUTELIST>]]]]>><![CDATA[
+		</out>
+      </book:getRoutesResponse>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:responseContent><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://www.example.org/Bookings/getRoutes"/></con:response><con:dispatchConfig/></con:mockOperation></con:mockService><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>
