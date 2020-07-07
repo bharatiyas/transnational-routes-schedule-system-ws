@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<body><book:getRoutesResponse xmlns:book="http://www.example.org/Bookings/">
+         <out>&lt;?xml version="1.0" encoding="utf-8"?&gt; &lt;ROUTELIST&gt; &lt;ROUTEINFO&gt;
+&lt;ORIGIN&gt;MY-KUL&lt;/ORIGIN&gt; &lt;DESTINATION&gt;SG-BEU&lt;/DESTINATION&gt; &lt;/ROUTEINFO&gt; &lt;/ROUTELIST&gt;
+		</out>
+      </book:getRoutesResponse>
+</body>
