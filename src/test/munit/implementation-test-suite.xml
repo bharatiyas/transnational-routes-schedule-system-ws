@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-test-suite.xml" />
+	<munit:test name="implementation-test-suite-routesFlowTest" doc:id="87878afa-55e5-40f5-94da-82fb6569958a" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock WebService Response" doc:id="77c8877f-3d5c-4e80-a670-e6d8212d327f" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="getRoutes" attributeName="operation" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsString('mock-responses/transnational-routes-mock-res.xml')]" mediaType="application/xml" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set URI Params" doc:id="62e1545a-5f0f-4fb5-8c72-d973882d7fb8" >
+				<munit:attributes value="#[{uriParams : {'transportType' :'SEA','transportCompany' :'Transnational'}}]" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to routesFlow" doc:id="ea314869-4fb7-481d-ac1b-cf2a1790774a" name="routesFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Check not null" doc:id="aeb0f5ea-ee75-4eeb-868a-643556d64099" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+			<munit-tools:assert-that doc:name="Compare payload" doc:id="39aac2f3-1e0b-4874-b3be-75c527b47d3c" is="#[MunitTools::equalTo(readUrl('classpath://expected-responses/transnational-routes-expected-res.json', 'application/json'))]" expression="#[payload]" message="Received payload doesnot match expected payload"/>
+			<munit-tools:verify-call doc:name="Verify OS Store Call" doc:id="e0912858-9515-44c7-a393-f3e7a36c489b" processor="os:store" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="SEA" attributeName="key" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<!-- <flow name="implementation-test-suiteFlow_secondCall_fromOS" doc:id="9929d86a-04dc-4226-b64a-c494c12f0d3e" > -->
+		<munit:test name="implementation-test-suite-routesFlowTest_secondCall_fromOS" doc:id="d5270c16-60fa-4b4b-b5ed-0e044f588bbf" description="Test" >
+			<munit:behavior >
+				<munit-tools:mock-when doc:name="Mock  WebService Response" doc:id="6cb91909-6800-4f05-80c3-1db11f889a17" processor="wsc:consume" >
+					<munit-tools:with-attributes >
+						<munit-tools:with-attribute whereValue="getRoutes" attributeName="operation" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return >
+						<munit-tools:payload value="#[MunitTools::getResourceAsString('mock-responses/transnational-routes-mock-res.xml')]" mediaType="application/xml" />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution >
+				<munit:set-event doc:name="Set  URI Params" doc:id="e6d17b5a-15b7-4586-904e-bf0fcf635e15" >
+					<munit:attributes value="#[{uriParams : {'transportType' :'AIR','transportCompany' :'Transnational'}}]" />
+				</munit:set-event>
+				<flow-ref doc:name="First Call to routesFlow" doc:id="1be6f109-8ea9-4d10-ba60-5f8ecbba3ec1" name="routesFlow" />
+				<munit:set-event doc:name="Set Event For Second Flow" doc:id="a132532e-14c0-4eb8-967e-cacc5d247fcf">
+				<munit:attributes value="#[{uriParams : {'transportType' :'AIR','transportCompany' :'Transnational'}}]" />
+			</munit:set-event>
+			<flow-ref doc:name="Second Call to routesFlow" doc:id="3aab4005-66c1-4054-8cad-ef3d3f320a59" name="routesFlow" />
+			</munit:execution>
+			<munit:validation >
+				<munit-tools:assert-that doc:name="Check not null" doc:id="003b97cf-9eb2-44a6-9f8f-8f9882bb6fce" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+				<munit-tools:assert-that doc:name="Compare payload" doc:id="d9063f6a-79d0-480a-88be-a68351511663" message="Received payload doesnot match expected payload" is="#[MunitTools::equalTo(readUrl('classpath://expected-responses/transnational-routes-expected-res.json', 'application/json'))]" expression="#[payload]" />
+				<munit-tools:verify-call doc:name="Verify  OS Store Call" doc:id="44c27cdb-c060-4166-80fd-0e2fbe209ca5" processor="os:store" times="1" >
+					<munit-tools:with-attributes >
+						<munit-tools:with-attribute whereValue="AIR" attributeName="key" />
+					</munit-tools:with-attributes>
+				</munit-tools:verify-call>
+				<munit-tools:verify-call doc:name="Verify  OS Retrieve Call" doc:id="cdc7a36c-2d6e-436a-baac-d149f876bdd2" processor="os:retrieve" times="2">
+					<munit-tools:with-attributes >
+						<munit-tools:with-attribute whereValue="AIR" attributeName="key" />
+					</munit-tools:with-attributes>
+				</munit-tools:verify-call>
+			</munit:validation>
+		</munit:test>
+	<munit:test name="implementation-test-suite-schedulesFlowTest" doc:id="fde580a2-9e7e-4696-8dd7-2eae19160878" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to schedulesFlow" doc:id="b0693843-65ba-4f6e-91f3-27f15180190f" name="schedulesFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Check Empty Payload" doc:id="b759665d-61ca-469b-b4f9-4a32acaa2984" is='#[MunitTools::equalTo("")]' expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<!-- </flow> -->
+
+
+</mule>

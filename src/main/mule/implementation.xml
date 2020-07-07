@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 	<os:object-store name="WebService_Response_ObjectStore" doc:name="Object store" doc:id="64bcbdad-b969-412c-b8ad-adb6b039c587" persistent="false" entryTtl="1" entryTtlUnit="DAYS" expirationIntervalUnit="DAYS" />
 	<flow name="routesFlow" doc:id="96438057-7902-46bf-a59d-f30e4013805b" >
 		<set-variable value="#[message.attributes.uriParams.transportType]" doc:name="Set transportType" doc:id="bde69278-f4c0-4430-8d6d-a2da023e13e7" variableName="transportType"/>
-		<os:retrieve doc:name="Retrieve" doc:id="a3b63cb6-07ab-472f-9419-711c8bce9c89" key="#[attributes.uriParams.transportType]" objectStore="WebService_Response_ObjectStore">
+		<os:retrieve doc:name="Retrieve from Object store" doc:id="a3b63cb6-07ab-472f-9419-711c8bce9c89" key="#[attributes.uriParams.transportType]" objectStore="WebService_Response_ObjectStore">
 			<os:default-value ><![CDATA[false]]></os:default-value>
 		</os:retrieve>
 		<choice doc:name="Choice" doc:id="3430428e-eec1-44b3-ac2f-cd3cbd4ba4d0" >
@@ -29,10 +29,10 @@ ns book http://www.example.org/Bookings/
 			</ee:message>
 		</ee:transform>
 				<try doc:name="Try" doc:id="e76b01ab-0a40-4ef9-82dd-72d3634c215c" >
-					<wsc:consume doc:name="Consume" doc:id="b0c9e24c-69fd-40ca-a803-1e59a7a5e4c6" config-ref="transNationalBookingServiceWsConsumer" operation="getRoutes" />
+					<wsc:consume doc:name="Call Transnational Web Service" doc:id="b0c9e24c-69fd-40ca-a803-1e59a7a5e4c6" config-ref="transNationalBookingServiceWsConsumer" operation="getRoutes" />
 					<error-handler>
 						<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b491f8fc-6cac-4da2-83c5-582686bb0938" >
-							<set-payload value="Internal Server Error. Error encountered while calling third party API." doc:name="Set Payload" doc:id="4dcf5667-ce42-499f-86a0-bcefcac37a48" />
+							<set-payload value="Internal Server Error. Error encountered while calling third party API." doc:name="Set Error Payload" doc:id="4dcf5667-ce42-499f-86a0-bcefcac37a48" />
 						</on-error-propagate>
 					</error-handler>
 				</try>
@@ -69,7 +69,7 @@ payload.ROUTELIST.*ROUTEINFO map ( rOUTEINFO , indexOfROUTEINFO ) -> {
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-				<os:store doc:name="Store" doc:id="282c4def-e562-445a-9315-53942905801c" key="#[vars.transportType]" objectStore="WebService_Response_ObjectStore" />
+				<os:store doc:name="Store" doc:id="282c4def-e562-445a-9315-53942905801c" key="#[vars.transportType]" objectStore="WebService_Response_ObjectStore"/>
 				<logger level="INFO" doc:name="Logger" doc:id="aaa5200b-29dd-4fa9-9224-db59bb7144bf" message='#["Data cached for transportType: " ++ vars.transportType]' />
 			</when>
 			<otherwise >
@@ -78,6 +78,6 @@ payload.ROUTELIST.*ROUTEINFO map ( rOUTEINFO , indexOfROUTEINFO ) -> {
 		</choice>
 	</flow>
 	<flow name="schedulesFlow" doc:id="5b1685bc-395b-4d42-9cc2-8081a2d5a1e2" >
-		<set-variable value="501" doc:name="Set Variable" doc:id="98564d94-b83b-44b7-97c8-a8eb4cf2b988" variableName="httpStatus"/>
+		<set-variable value="501" doc:name="Set httpStatus" doc:id="98564d94-b83b-44b7-97c8-a8eb4cf2b988" variableName="httpStatus"/>
 	</flow>
 </mule>
