@@ -41,7 +41,16 @@ ns book http://www.example.org/Bookings/
 					<wsc:consume doc:name="Call Transnational Web Service" doc:id="b0c9e24c-69fd-40ca-a803-1e59a7a5e4c6" config-ref="transNationalBookingServiceWsConsumer" operation="getRoutes" />
 					<error-handler>
 						<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b491f8fc-6cac-4da2-83c5-582686bb0938" >
-							<set-payload value="Internal Server Error. Error encountered while calling third party API." doc:name="Set Error Payload" doc:id="4dcf5667-ce42-499f-86a0-bcefcac37a48" />
+							<ee:transform doc:name="Set Payload" doc:id="3c99e154-adf3-40bf-a1a3-63b5f308bf58" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "Error encountered while calling third party API"
+}]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
 						</on-error-propagate>
 					</error-handler>
 				</try>
@@ -99,10 +108,33 @@ output application/json
 }]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
+				<ee:transform doc:name="Set Payload" doc:id="41f58286-d913-4039-8314-e50cd26b71c5" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+if (payload.message != "Error encountered while calling third party API")
+{
+	"message": "Internal Server Error"
+} else {
+	"message": "Internal Server Error. Error encountered while calling third party API"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</on-error-propagate>
 		</error-handler>
 	</flow>
 	<flow name="schedulesFlow" doc:id="5b1685bc-395b-4d42-9cc2-8081a2d5a1e2" >
 		<set-variable value="501" doc:name="Set httpStatus" doc:id="98564d94-b83b-44b7-97c8-a8eb4cf2b988" variableName="httpStatus"/>
+		<ee:transform doc:name="Set Payload" doc:id="5300a085-1b79-4d56-907c-5cf42f2ccaa9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "Not Implemented"
+} ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 </mule>
