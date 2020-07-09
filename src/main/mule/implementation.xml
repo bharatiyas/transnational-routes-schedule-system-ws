@@ -8,6 +8,15 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
 	
 	<os:object-store name="WebService_Response_ObjectStore" doc:name="Object store" doc:id="64bcbdad-b969-412c-b8ad-adb6b039c587" persistent="false" entryTtl="1" entryTtlUnit="DAYS" expirationIntervalUnit="DAYS" />
+	<configuration doc:name="Configuration" doc:id="8955b7b6-5fb7-4181-88c9-cdb8b834f0a5">
+		<expression-language>
+			<global-functions>
+				def generateUUID() {
+					return java.util.UUID.randomUUID().toString();
+				}
+			</global-functions>
+		</expression-language>
+	</configuration>
 	<flow name="routesFlow" doc:id="96438057-7902-46bf-a59d-f30e4013805b" >
 		<set-variable value="#[message.attributes.uriParams.transportType]" doc:name="Set transportType" doc:id="bde69278-f4c0-4430-8d6d-a2da023e13e7" variableName="transportType"/>
 		<os:retrieve doc:name="Retrieve from Object store" doc:id="a3b63cb6-07ab-472f-9419-711c8bce9c89" key="#[attributes.uriParams.transportType]" objectStore="WebService_Response_ObjectStore">
@@ -76,6 +85,22 @@ payload.ROUTELIST.*ROUTEINFO map ( rOUTEINFO , indexOfROUTEINFO ) -> {
 				<logger level="INFO" doc:name="Logger" doc:id="58efb441-cca2-4e40-a5cd-82627c1d4cac" message='#["Returning cached data exists for transportType: " ++ vars.transportType]'/>
 			</otherwise>
 		</choice>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="eb71fe7d-912b-4ece-afb6-8f126c2f4465" >
+				<ee:transform doc:name="Set X-Event-Id" doc:id="4731b616-78d7-4ca8-a9e2-87794cf1cbad">
+					<ee:message>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="outboundHeaders"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"X-Event-Id": correlationId
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
 	</flow>
 	<flow name="schedulesFlow" doc:id="5b1685bc-395b-4d42-9cc2-8081a2d5a1e2" >
 		<set-variable value="501" doc:name="Set httpStatus" doc:id="98564d94-b83b-44b7-97c8-a8eb4cf2b988" variableName="httpStatus"/>
