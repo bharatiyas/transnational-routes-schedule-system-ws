@@ -26,7 +26,7 @@
 			<flow-ref doc:name="Flow-ref to routesFlow" doc:id="ea314869-4fb7-481d-ac1b-cf2a1790774a" name="routesFlow"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert-that doc:name="Check not null" doc:id="aeb0f5ea-ee75-4eeb-868a-643556d64099" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+			<munit-tools:assert-that doc:name="Check Not Null" doc:id="aeb0f5ea-ee75-4eeb-868a-643556d64099" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
 			<munit-tools:assert-that doc:name="Compare payload" doc:id="39aac2f3-1e0b-4874-b3be-75c527b47d3c" is="#[MunitTools::equalTo(readUrl('classpath://expected-responses/transnational-routes-expected-res.json', 'application/json'))]" expression="#[payload]" message="Received payload doesnot match expected payload"/>
 			<munit-tools:verify-call doc:name="Verify OS Store Call" doc:id="e0912858-9515-44c7-a393-f3e7a36c489b" processor="os:store" times="1">
 				<munit-tools:with-attributes >
@@ -58,7 +58,7 @@
 			<flow-ref doc:name="Second Call to routesFlow" doc:id="3aab4005-66c1-4054-8cad-ef3d3f320a59" name="routesFlow" />
 			</munit:execution>
 			<munit:validation >
-				<munit-tools:assert-that doc:name="Check not null" doc:id="003b97cf-9eb2-44a6-9f8f-8f9882bb6fce" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+				<munit-tools:assert-that doc:name="Check Not Null" doc:id="003b97cf-9eb2-44a6-9f8f-8f9882bb6fce" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
 				<munit-tools:assert-that doc:name="Compare payload" doc:id="d9063f6a-79d0-480a-88be-a68351511663" message="Received payload doesnot match expected payload" is="#[MunitTools::equalTo(readUrl('classpath://expected-responses/transnational-routes-expected-res.json', 'application/json'))]" expression="#[payload]" />
 				<munit-tools:verify-call doc:name="Verify  OS Store Call" doc:id="44c27cdb-c060-4166-80fd-0e2fbe209ca5" processor="os:store" times="1" >
 					<munit-tools:with-attributes >
@@ -77,7 +77,8 @@
 			<flow-ref doc:name="Flow-ref to schedulesFlow" doc:id="b0693843-65ba-4f6e-91f3-27f15180190f" name="schedulesFlow"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert-that doc:name="Check Empty Payload" doc:id="b759665d-61ca-469b-b4f9-4a32acaa2984" is='#[MunitTools::equalTo("")]' expression="#[payload]"/>
+			<munit-tools:assert-that doc:name="Check Not Null" doc:id="36f7d517-474d-4da1-9144-cd614d763a37" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+			<munit-tools:assert-that doc:name="Compare Payload" doc:id="b759665d-61ca-469b-b4f9-4a32acaa2984" is="#[MunitTools::equalTo(readUrl('classpath://expected-responses/transnational-schedules-expected-res.json', 'application/json'))]" expression="#[payload]"/>
 		</munit:validation>
 	</munit:test>
 	<!-- </flow> -->
