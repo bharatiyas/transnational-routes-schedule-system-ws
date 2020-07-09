@@ -17,7 +17,7 @@ To run the application from Anypoint Studio perform the following steps:
 
 1. Fetch the project from Github
 2. Extract the SOAP-UI Mocks from *src/test/resources/soapui-mocks* directory
-3. Import the files in SOAP-UI and run the mocks
+3. Import the files in SOAP-UI and run the mock. There is only one mock for Routes API because Schedules API has not been implemented.
 4. Edit Run Configurations to provide an environment variables: env = dev
 5. Run the configuration
 6. Extract the Postman collection and environment files from *src/test/resources/postman*
