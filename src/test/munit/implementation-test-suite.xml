@@ -81,6 +81,33 @@
 			<munit-tools:assert-that doc:name="Compare Payload" doc:id="b759665d-61ca-469b-b4f9-4a32acaa2984" is="#[MunitTools::equalTo(readUrl('classpath://expected-responses/transnational-schedules-expected-res.json', 'application/json'))]" expression="#[payload]"/>
 		</munit:validation>
 	</munit:test>
+	<munit:test name="routesFlowTest-error-scenario" doc:id="04df30c3-0652-4567-9693-0acd13eaf2b3" description="Test" expectedErrorType="HTTP:CONNECTIVITY">
+			<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="47a2e6e7-1409-49b6-b026-1fc9aca91f77" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="getRoutes" attributeName="operation" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			</munit:behavior>
+		<munit:execution>
+				<munit:set-event doc:name="Set URI Params" doc:id="a15f5ba4-325e-4204-88f9-a05d3b325086">
+					<munit:attributes value="#[{uriParams : {'transportType' :'SEA','transportCompany' :'Transnational'}}]" />
+				</munit:set-event>
+				<flow-ref doc:name="Flow-ref to routesFlow" doc:id="e2ba77cb-8fa2-453d-9bf8-03727ade0be1" name="routesFlow" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Check not null" doc:id="7a424c1d-b671-46f5-88e6-2e1c6bf3c744" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+				<munit-tools:assert-that doc:name="Compare payload" doc:id="28d58261-b576-45a5-88d5-3cd80d7082e4" message="Received payload doesnot match expected payload" is="#[MunitTools::equalTo(readUrl('classpath://expected-responses/transnational-routes-expected-res.json', 'application/json'))]" expression="#[payload]" />
+				<munit-tools:verify-call doc:name="Verify OS Store Call" doc:id="a12e42ca-3c48-4973-b1eb-66c4027a1eb3" processor="os:store" times="1">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="SEA" attributeName="key" />
+					</munit-tools:with-attributes>
+				</munit-tools:verify-call>
+			</munit:validation>
+		</munit:test>
 	<!-- </flow> -->
 
 
